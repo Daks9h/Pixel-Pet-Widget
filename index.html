@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PixelPet Code Companion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              ink: "#07091a",
+              panel: "#12162c",
+              mint: "#7dffc3",
+              blush: "#ff8fab",
+              cream: "#fff3d6",
+              dusk: "#8ea0d4",
+            },
+            fontFamily: {
+              pixel: ['"Press Start 2P"', "cursive"],
+              mono: ['"IBM Plex Mono"', "ui-monospace", "monospace"],
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="bg-ink text-cream font-mono min-h-screen">
+    <div class="scanlines" aria-hidden="true"></div>
+    <div class="glow-orb" aria-hidden="true"></div>
+
+    <main class="relative z-10 mx-auto max-w-6xl px-4 py-6 lg:py-10">
+      <header class="mb-6 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="font-pixel text-[10px] tracking-widest text-mint">SAVE 01 · COZY MODE</p>
+          <h1 class="mt-3 font-pixel text-lg leading-relaxed text-cream sm:text-xl">
+            PixelPet Code Companion
+          </h1>
+          <p class="mt-3 max-w-xl text-sm text-dusk">
+            Type in the sandbox or check off a task. Your pixel buddy eats treats, levels up, and
+            naps if the keys go quiet.
+          </p>
+        </div>
+        <div class="rounded-xl border border-white/10 bg-panel/80 px-4 py-3 text-xs text-dusk">
+          Idle nap in <span id="sleep-countdown" class="text-mint">60s</span>
+        </div>
+      </header>
+
+      <section class="grid items-start gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)]">
+        <div class="space-y-6">
+          <article class="window-chrome overflow-hidden rounded-2xl border border-white/10 bg-panel/90 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-white/10 px-4 py-2">
+              <div class="flex items-center gap-2">
+                <span class="h-2.5 w-2.5 rounded-full bg-blush"></span>
+                <span class="h-2.5 w-2.5 rounded-full bg-cream/80"></span>
+                <span class="h-2.5 w-2.5 rounded-full bg-mint"></span>
+                <span class="ml-3 text-xs text-dusk">sandbox.js</span>
+              </div>
+              <span id="coding-status" class="text-[10px] uppercase tracking-widest text-dusk">idle</span>
+            </div>
+            <div class="flex min-h-[280px]">
+              <div
+                id="line-gutter"
+                class="select-none border-r border-white/5 bg-black/20 px-3 py-4 text-right text-[11px] leading-6 text-dusk/70"
+              ></div>
+              <label class="sr-only" for="code-editor">Simulated code editor</label>
+              <textarea
+                id="code-editor"
+                spellcheck="false"
+                class="w-full resize-none bg-transparent px-4 py-4 font-mono text-sm leading-6 text-mint outline-none placeholder:text-dusk/50"
+                placeholder="start typing... your pet loves the clack of keys"
+              ></textarea>
+            </div>
+          </article>
+
+          <article class="rounded-2xl border border-white/10 bg-panel/90 p-5 shadow-2xl">
+            <div class="mb-4 flex items-center justify-between gap-3">
+              <h2 class="font-pixel text-[11px] text-blush">Mini quests</h2>
+              <p class="text-[11px] text-dusk">Check a box to feed a treat (+20 EXP)</p>
+            </div>
+            <form id="todo-form" class="mb-4 flex gap-2">
+              <label class="sr-only" for="todo-input">Add a task</label>
+              <input
+                id="todo-input"
+                type="text"
+                maxlength="80"
+                placeholder="Add a tiny quest..."
+                class="flex-1 rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-cream outline-none placeholder:text-dusk/60 focus:border-mint/60"
+              />
+              <button
+                type="submit"
+                class="rounded-lg bg-mint px-3 py-2 text-xs font-semibold text-ink hover:bg-cream"
+              >
+                Add
+              </button>
+            </form>
+            <ul id="todo-list" class="space-y-2"></ul>
+          </article>
+        </div>
+
+        <aside class="lg:sticky lg:top-6">
+          <article class="pet-widget rounded-3xl border border-mint/20 bg-panel/95 p-5 shadow-[0_0_80px_rgba(125,255,195,0.08)]">
+            <div class="mb-4 flex items-start justify-between gap-3">
+              <div>
+                <label class="block text-[10px] uppercase tracking-widest text-dusk" for="pet-name">
+                  Companion name
+                </label>
+                <input
+                  id="pet-name"
+                  maxlength="16"
+                  class="mt-1 w-40 bg-transparent font-pixel text-xs text-cream outline-none"
+                />
+              </div>
+              <div class="text-right">
+                <p id="pet-stage-label" class="font-pixel text-[10px] text-mint">EGG / BLOB</p>
+                <p id="pet-badge" class="mt-1 text-[11px] text-blush">Hatchling</p>
+              </div>
+            </div>
+
+            <div class="pet-stage relative mx-auto overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-[#1b2144] to-[#0b1028]">
+              <div class="stars" aria-hidden="true"></div>
+              <canvas id="pet-canvas" width="192" height="192" class="relative z-10 mx-auto block"></canvas>
+              <div id="particles" class="pointer-events-none absolute inset-0 z-20"></div>
+              <p id="mood-caption" class="relative z-10 pb-3 text-center text-[11px] text-dusk">
+                breathing softly...
+              </p>
+            </div>
+
+            <div class="mt-5">
+              <div class="mb-1 flex items-center justify-between text-[11px]">
+                <span id="level-label" class="text-cream">Lv. 1</span>
+                <span id="exp-label" class="text-dusk">0 / 40 EXP</span>
+              </div>
+              <div class="h-3 overflow-hidden rounded-full border border-white/10 bg-black/40">
+                <div id="exp-bar" class="exp-bar h-full w-0 bg-gradient-to-r from-blush to-mint"></div>
+              </div>
+            </div>
+
+            <p id="toast" class="mt-4 min-h-[1.25rem] text-center text-xs text-mint" aria-live="polite"></p>
+
+            <button
+              id="reset-btn"
+              type="button"
+              class="mt-2 w-full rounded-lg border border-white/10 py-2 text-[11px] text-dusk hover:border-blush/40 hover:text-blush"
+            >
+              Reset save
+            </button>
+          </article>
+        </aside>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
